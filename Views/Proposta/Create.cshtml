@@ -1,0 +1,72 @@
+@model Gestão_de_projetos.Models.Proposta
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Nova Proposta";
+}
+
+<h1>Criar Proposta</h1>
+
+<h4>Proposta</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Descricao" class="control-label">
+                    Descrição
+                </label>
+
+                <input asp-for="Descricao" class="form-control" />
+
+                <span asp-validation-for="Descricao"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TipoProposta" class="control-label">
+                    Tipo da Proposta
+                </label>
+
+                <input asp-for="TipoProposta" class="form-control" />
+
+                <span asp-validation-for="TipoProposta"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="IdProjeto" class="control-label">
+                    Projeto
+                </label>
+
+                <input asp-for="IdProjeto" class="form-control" />
+
+                <span asp-validation-for="IdProjeto"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit"
+                       value="Criar"
+                       class="btn btn-primary" />
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index">Voltar para a lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

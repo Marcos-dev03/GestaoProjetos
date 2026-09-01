@@ -1,0 +1,32 @@
+﻿<div class="form-group" >
+
+<label asp-for="Senha" >
+Senha
+</label >
+
+<div class="input-wrapper password-wrapper" >
+
+<i class="bi bi-lock input-icon" > </i >
+
+<input asp-for="Senha"
+type="password"
+placeholder="Digite sua senha"
+autocomplete="current-password"
+id="senhaLogin" / >
+
+<button type="button"
+class="password-toggle"
+onclick="togglePassword('senhaLogin', this)"
+aria-label="Mostrar senha" >
+
+<i class="bi bi-eye" > </i >
+
+</button >
+
+</div >
+
+<span asp-validation-for="Senha"
+class="validation-message" >
+</span >
+
+</div >

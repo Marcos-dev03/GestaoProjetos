@@ -1,0 +1,191 @@
+﻿@model Gestão_de_projetos.Models.Infra.AcessarViewModel
+
+@{
+	Layout = "_AuthLayout";
+	ViewData["Title"] = "Acessar";
+}
+
+<div class="auth-page">
+
+	<div class="auth-card">
+
+		<div class="auth-brand">
+
+			<div class="brand-icon">
+				<i class="bi bi-kanban-fill"></i>
+			</div>
+
+			<h1>Gestão<span>+</span></h1>
+
+			<p>
+				Organize seus projetos,
+				propostas e equipes em um só lugar.
+			</p>
+
+			<div style="margin-top: 20px; color: #777a9c; font-size: 12px;">
+				Uma plataforma única para acompanhar prazos, tarefas e entregas com clareza.
+			</div>
+
+		</div>
+
+		<div class="auth-content">
+
+			<div class="auth-header">
+
+				<span class="auth-label">
+					BEM-VINDO DE VOLTA
+				</span>
+
+				<h2>Acessar sua conta</h2>
+
+				<p>
+					Entre com seus dados para continuar.
+				</p>
+
+			</div>
+
+			<form asp-controller="Infra"
+				  asp-action="Acessar"
+				  method="post"
+				  class="auth-form">
+
+				<div asp-validation-summary="ModelOnly"
+					 class="validation-message">
+				</div>
+
+				<div class="form-group">
+
+					<label asp-for="NomeUsuario">
+						Nome de usuário
+					</label>
+
+					<div class="input-wrapper">
+
+						<i class="bi bi-person"></i>
+
+						<input asp-for="NomeUsuario"
+							   placeholder="Digite seu nome de usuário"
+							   autocomplete="username" />
+
+					</div>
+
+					<span asp-validation-for="NomeUsuario"
+						  class="validation-message">
+					</span>
+
+				</div>
+
+				<div class="form-group">
+
+					<label asp-for="Senha">
+						Senha
+					</label>
+
+					<div class="input-wrapper">
+
+						<i class="bi bi-lock"></i>
+
+						<input asp-for="Senha"
+							   type="password"
+							   placeholder="Digite sua senha"
+							   autocomplete="current-password"
+							   id="senhaLogin" />
+
+						<button type="button"
+								class="password-toggle"
+								onclick="togglePassword('senhaLogin', this)">
+
+							<i class="bi bi-eye"></i>
+
+						</button>
+
+					</div>
+
+					<span asp-validation-for="Senha"
+						  class="validation-message">
+					</span>
+
+				</div>
+
+				<div class="remember-row">
+
+					<label class="remember-check">
+
+						<input asp-for="LembrarDeMim"
+							   type="checkbox" />
+
+						<span>Lembrar de mim</span>
+
+					</label>
+
+					<a asp-controller="Infra"
+					   asp-action="EsqueciSenha"
+					   class="forgot-password">
+						Esqueci minha senha
+					</a>
+
+				</div>
+
+				<button type="submit"
+						class="auth-button">
+
+					Entrar
+					<i class="bi bi-arrow-right"></i>
+
+				</button>
+
+			</form>
+
+			<div class="auth-divider">
+				<span>ou</span>
+			</div>
+
+			<div class="auth-register">
+
+				<span style="display:block; color:#777a9c; font-size:11px; margin-bottom:10px;">
+					Ainda não possui uma conta?
+				</span>
+
+				<a asp-controller="Infra"
+				   asp-action="RegistrarNovoUsuario">
+
+					Criar uma conta
+					<i class="bi bi-arrow-up-right"></i>
+
+				</a>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="auth-footer">
+		© 2026 Gestão de Projetos · Sistema de gerenciamento
+	</div>
+
+</div>
+
+@section Scripts {
+
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		function togglePassword(inputId, button) {
+			const input = document.getElementById(inputId);
+			const icon = button.querySelector("i");
+
+			if (input.type === "password") {
+				input.type = "text";
+				icon.classList.remove("bi-eye");
+				icon.classList.add("bi-eye-slash");
+			} else {
+				input.type = "password";
+				icon.classList.remove("bi-eye-slash");
+				icon.classList.add("bi-eye");
+			}
+		}
+	</script>
+}

@@ -1,0 +1,51 @@
+@model Gestão_de_projetos.Models.Proposta
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Detalhes da Proposta";
+}
+
+<h1>Detalhes da Proposta</h1>
+
+<div>
+    <h4>Proposta</h4>
+    <hr />
+
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoProposta)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipoProposta)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdProjeto)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdProjeto)
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit"
+       asp-route-id="@Model?.IdProposta"
+       class="btn btn-primary">
+        Editar
+    </a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Voltar
+    </a>
+</div>

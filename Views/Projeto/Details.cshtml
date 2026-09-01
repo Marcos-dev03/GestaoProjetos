@@ -1,0 +1,83 @@
+@model Gestão_de_projetos.Models.Projeto
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Detalhes do Projeto";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1>Detalhes do Projeto</h1>
+        <p class="text-muted">
+            Informações do projeto selecionado.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h3 class="mb-4">
+                @Model.Nome
+            </h3>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Nome
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Nome
+                </dd>
+
+
+                <dt class="col-sm-3">
+                    Descrição
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Descricao
+                </dd>
+
+
+                <dt class="col-sm-3">
+                    Data de início
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.DataInicio.ToString("dd/MM/yyyy")
+                </dd>
+
+
+                <dt class="col-sm-3">
+                    Data de término
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.DataFim.ToString("dd/MM/yyyy")
+                </dd>
+
+            </dl>
+
+            <div class="mt-4">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.IdProjeto"
+                   class="btn btn-primary">
+                    Editar Projeto
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Voltar
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

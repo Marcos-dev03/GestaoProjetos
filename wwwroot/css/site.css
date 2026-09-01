@@ -1,0 +1,123 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 0;
+}
+
+.validation-message {
+    color: #ff6478;
+    font-size: 12px;
+}
+
+.settings-dashboard-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.settings-dashboard-card {
+    position: relative;
+    min-width: 0;
+    min-height: 180px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    background: rgba(13, 13, 40, 0.82);
+    border: 1px solid rgba(132, 126, 255, 0.10);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    transition: 0.2s ease;
+}
+
+    .settings-dashboard-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.22);
+    }
+
+.settings-dashboard-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-top: 18px;
+    padding-right: 35px;
+}
+
+    .settings-dashboard-content span {
+        color: #777995;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .settings-dashboard-content strong {
+        margin-top: 6px;
+        color: #ffffff;
+        font-size: 20px;
+        line-height: 1.2;
+        font-weight: 650;
+    }
+
+    .settings-dashboard-content small {
+        margin-top: 8px;
+        color: #555775;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+.settings-dashboard-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.10);
+    color: #8178ff;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+    .settings-dashboard-button:hover {
+        background: rgba(99, 102, 241, 0.20);
+        color: #aaa4ff;
+    }
+
+@media (max-width: 1100px) {
+    .settings-dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .settings-dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .settings-dashboard-card {
+        min-height: 170px;
+    }
+}
+
+@media (max-width: 400px) {
+    .settings-dashboard-card {
+        min-height: 160px;
+        padding: 18px;
+    }
+}

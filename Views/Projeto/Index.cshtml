@@ -1,0 +1,170 @@
+@model IEnumerable<Gestão_de_projetos.Models.Projeto>
+
+@{
+    ViewData["Title"] = "Projetos";
+}
+
+<div class="page-header">
+
+    <div>
+        <span class="page-eyebrow">GESTÃO</span>
+
+        <h1>Projetos</h1>
+
+        <p>
+            Gerencie os projetos cadastrados no sistema.
+        </p>
+    </div>
+
+    <a asp-action="Create"
+       class="btn-primary-custom">
+
+        <i class="bi bi-plus-lg"></i>
+
+        Novo projeto
+
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    <div class="content-card-header">
+
+        <div>
+
+            <h3>
+                Projetos cadastrados
+            </h3>
+
+            <span>
+                Visualize e gerencie seus projetos.
+            </span>
+
+        </div>
+
+        <div class="card-counter">
+
+            <i class="bi bi-kanban"></i>
+
+            @Model.Count()
+
+        </div>
+
+    </div>
+
+    <div class="table-container">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Projeto</th>
+
+                    <th>Descrição</th>
+
+                    <th>Início</th>
+
+                    <th>Fim</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var projeto in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <div class="project-cell">
+
+                                <div class="project-avatar">
+
+                                    <i class="bi bi-kanban"></i>
+
+                                </div>
+
+                                <div class="project-name">
+
+                                    <strong>
+                                        @projeto.Nome
+                                    </strong>
+
+                                    <span>
+                                        Projeto #@projeto.IdProjeto
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="description-cell">
+                                @projeto.Descricao
+                            </span>
+
+                        </td>
+
+                        <td>
+                            @projeto.DataInicio.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            @projeto.DataFim.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@projeto.IdProjeto"
+                                   class="action-btn details"
+                                   title="Detalhes">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@projeto.IdProjeto"
+                                   class="action-btn edit"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@projeto.IdProjeto"
+                                   class="action-btn delete"
+                                   title="Excluir">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

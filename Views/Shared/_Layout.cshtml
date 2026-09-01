@@ -1,0 +1,508 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>@ViewData["Title"] - Gestão+</title>
+
+	<link rel="stylesheet"
+		  href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+	<link rel="stylesheet"
+		  href="~/css/site.css"
+		  asp-append-version="true" />
+
+	<link rel="stylesheet"
+		  href="~/css/layout.css"
+		  asp-append-version="true" />
+
+	<link rel="stylesheet"
+		  href="~/Gestão_de_projetos.styles.css"
+		  asp-append-version="true" />
+
+	<link rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+</head>
+
+<body>
+
+	@{
+		var controller =
+			ViewContext.RouteData.Values["controller"]?.ToString();
+
+		var action =
+			ViewContext.RouteData.Values["action"]?.ToString();
+
+		var paginaAutenticacao =
+			controller == "Infra" &&
+			(
+				action == "Acessar" ||
+				action == "Registrar" ||
+				action == "RegistrarNovoUsuario" ||
+				action == "EsqueciSenha" ||
+				action == "EmailEnviado" ||
+				action == "ResetarSenha"
+			);
+	}
+
+
+	@if (paginaAutenticacao)
+	{
+		<main class="auth-page">
+
+			@RenderBody()
+
+		</main>
+	}
+	else
+	{
+		var nomeUsuario =
+			User.Identity?.Name ?? "Usuário";
+
+		var inicial =
+			!string.IsNullOrEmpty(nomeUsuario)
+				? nomeUsuario.Substring(0, 1).ToUpper()
+				: "U";
+
+
+		<div class="app-shell">
+
+			<aside class="sidebar" id="sidebar">
+
+				<div class="sidebar-brand">
+
+					<div class="brand-mark">
+
+						<i class="bi bi-kanban-fill"></i>
+
+					</div>
+
+					<div class="brand-text">
+
+						<strong>
+							Gestão+
+						</strong>
+
+						<span>
+							Workspace
+						</span>
+
+					</div>
+
+				</div>
+
+				<nav class="sidebar-nav">
+
+					<div class="nav-section-title">
+						PRINCIPAL
+					</div>
+
+					@if (User.Identity?.IsAuthenticated == true)
+					{
+						<a class="sidebar-link @(controller == "Home" ? "active" : "")"
+						   asp-controller="Home"
+						   asp-action="Index">
+
+							<span class="nav-icon">
+
+								<i class="bi bi-grid-1x2-fill"></i>
+
+							</span>
+
+							<span>
+								Dashboard
+							</span>
+
+						</a>
+					}
+
+					@if (
+						User.IsInRole("Admin") ||
+						User.IsInRole("Projetos")
+					)
+					{
+						<a class="sidebar-link @(controller == "Projeto" ? "active" : "")"
+						   asp-controller="Projeto"
+						   asp-action="Index">
+
+							<span class="nav-icon">
+
+								<i class="bi bi-kanban"></i>
+
+							</span>
+
+							<span>
+								Projetos
+							</span>
+
+						</a>
+					}
+
+					@if (
+						User.IsInRole("Admin") ||
+						User.IsInRole("Propostas")
+					)
+					{
+						<a class="sidebar-link @(controller == "Proposta" ? "active" : "")"
+						   asp-controller="Proposta"
+						   asp-action="Index">
+
+							<span class="nav-icon">
+
+								<i class="bi bi-file-earmark-text"></i>
+
+							</span>
+
+							<span>
+								Propostas
+							</span>
+
+						</a>
+					}
+
+					@if (User.IsInRole("Admin"))
+					{
+						<a class="sidebar-link @(controller == "Usuarios" ? "active" : "")"
+						   asp-controller="Usuarios"
+						   asp-action="Index">
+
+							<span class="nav-icon">
+
+								<i class="bi bi-people"></i>
+
+							</span>
+
+							<span>
+								Usuários
+							</span>
+
+						</a>
+					}
+
+					@if (
+	User.IsInRole("Admin") ||
+	User.IsInRole("Configuracoes")
+)
+					{
+						<div class="nav-section-title system-title">
+							SISTEMA
+						</div>
+
+						<a class="sidebar-link @(controller == "Configuracoes" ? "active" : "")"
+						   asp-controller="Configuracoes"
+						   asp-action="Index">
+
+							<span class="nav-icon">
+								<i class="bi bi-gear"></i>
+							</span>
+
+							<span>
+								Configurações
+							</span>
+
+						</a>
+
+						<button type="button"
+								class="sidebar-link theme-toggle"
+								id="themeToggle">
+
+							<span class="nav-icon" id="themeIcon">
+								<i class="bi bi-moon-stars"></i>
+							</span>
+
+							<span id="themeText">
+								Modo escuro
+							</span>
+
+						</button>
+					}
+
+				</nav>
+
+				<div class="sidebar-bottom">
+
+					<div class="profile-mini">
+
+						<div class="profile-avatar">
+
+							@inicial
+
+						</div>
+
+						<div class="profile-info">
+
+							<strong>
+
+								@nomeUsuario
+
+							</strong>
+
+							<span>
+
+								@(User.IsInRole("Admin")
+									? "Administrador"
+									: "Usuário")
+
+							</span>
+
+						</div>
+
+					</div>
+
+					<a class="logout-link"
+					   asp-controller="Infra"
+					   asp-action="Sair">
+
+						<i class="bi bi-box-arrow-right"></i>
+
+						<span>
+							Sair
+						</span>
+
+					</a>
+
+				</div>
+
+			</aside>
+
+			<div class="menu-overlay"
+				 id="menuOverlay">
+			</div>
+
+			<div class="main-area">
+
+				<header class="topbar">
+
+					<div class="topbar-left">
+
+						<button class="sidebar-toggle"
+								id="sidebarToggle"
+								type="button"
+								aria-label="Abrir menu">
+
+							<i class="bi bi-list"></i>
+
+						</button>
+
+						<div class="breadcrumb-area">
+
+							<span class="breadcrumb-muted">
+
+								Gestão+
+
+							</span>
+
+							<span class="breadcrumb-divider">
+
+								/
+
+							</span>
+
+							<strong>
+
+								@ViewData["Title"]
+
+							</strong>
+
+						</div>
+
+					</div>
+
+					<div class="topbar-right">
+
+						<div class="topbar-user">
+
+							<div class="profile-avatar small">
+								@inicial
+							</div>
+
+							<div class="topbar-user-text">
+
+								<strong>
+									@nomeUsuario
+								</strong>
+
+								<span>
+									@(User.IsInRole("Admin")
+										? "Administrador"
+										: "Usuário")
+								</span>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</header>
+
+				<main class="content-area">
+
+					@RenderBody()
+
+				</main>
+
+				@* <footer class="app-footer">
+
+					<span>
+
+						© 2026 Gestão+
+
+					</span>
+
+					<span>
+
+						Sistema de gerenciamento
+
+					</span>
+
+				</footer> *@
+
+			</div>
+
+		</div>
+	}
+
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	<script>
+			document.addEventListener("DOMContentLoaded", function() {
+
+				// =========================
+				// MENU LATERAL
+				// =========================
+
+				const sidebarToggle = document.getElementById("sidebarToggle");
+				const sidebar = document.getElementById("sidebar");
+				const menuOverlay = document.getElementById("menuOverlay");
+
+				if (sidebarToggle && sidebar && menuOverlay) {
+
+					sidebarToggle.addEventListener("click", function() {
+
+						sidebar.classList.toggle("open");
+						menuOverlay.classList.toggle("open");
+
+					});
+
+					menuOverlay.addEventListener("click", function() {
+
+						sidebar.classList.remove("open");
+						menuOverlay.classList.remove("open");
+
+					});
+
+					window.addEventListener("resize", function() {
+
+						if (window.innerWidth > 900) {
+
+							sidebar.classList.remove("open");
+							menuOverlay.classList.remove("open");
+
+						}
+
+					});
+
+				}
+
+
+				// =========================
+				// MODO CLARO / ESCURO
+				// =========================
+
+				const themeToggle = document.getElementById("themeToggle");
+				const themeIcon = document.getElementById("themeIcon");
+				const themeText = document.getElementById("themeText");
+
+
+				function atualizarTema() {
+
+					const modoClaro =
+						document.body.classList.contains("light-mode");
+
+
+					if (modoClaro) {
+
+						if (themeIcon) {
+							themeIcon.innerHTML =
+								'<i class="bi bi-sun-fill"></i>';
+						}
+
+						if (themeText) {
+							themeText.textContent = "Modo claro";
+						}
+
+					}
+					else {
+
+						if (themeIcon) {
+							themeIcon.innerHTML =
+								'<i class="bi bi-moon-stars"></i>';
+						}
+
+						if (themeText) {
+							themeText.textContent = "Modo escuro";
+						}
+
+					}
+
+				}
+
+
+				// Recupera o tema salvo
+
+				const temaSalvo =
+					localStorage.getItem("tema");
+
+
+				if (temaSalvo === "claro") {
+
+					document.body.classList.add("light-mode");
+
+				}
+
+
+				atualizarTema();
+
+
+				// Botão de tema
+
+				if (themeToggle) {
+
+					themeToggle.addEventListener("click", function() {
+
+						document.body.classList.toggle("light-mode");
+
+
+						const modoClaro =
+							document.body.classList.contains("light-mode");
+
+
+						localStorage.setItem(
+							"tema",
+							modoClaro ? "claro" : "escuro"
+						);
+
+
+						atualizarTema();
+
+					});
+
+				}
+
+			});
+	</script>
+
+	@await RenderSectionAsync(
+		"Scripts",
+		required: false
+	)
+</body>
+
+</html>

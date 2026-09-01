@@ -1,0 +1,122 @@
+@model Gestão_de_projetos.Models.Projeto
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Editar Projeto";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1>Editar Projeto</h1>
+        <p class="text-muted">
+            Altere as informações do projeto.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form asp-action="Edit">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <input type="hidden"
+                       asp-for="IdProjeto" />
+
+                <div class="mb-3">
+
+                    <label asp-for="Nome"
+                           class="form-label">
+                        Nome do Projeto
+                    </label>
+
+                    <input asp-for="Nome"
+                           class="form-control" />
+
+                    <span asp-validation-for="Nome"
+                          class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Descricao"
+                           class="form-label">
+                        Descrição
+                    </label>
+
+                    <textarea asp-for="Descricao"
+                              class="form-control"
+                              rows="4"></textarea>
+
+                    <span asp-validation-for="Descricao"
+                          class="text-danger"></span>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DataInicio"
+                               class="form-label">
+                            Data de início
+                        </label>
+
+                        <input asp-for="DataInicio"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="DataInicio"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DataFim"
+                               class="form-label">
+                            Data de término
+                        </label>
+
+                        <input asp-for="DataFim"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="DataFim"
+                              class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Salvar alterações
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

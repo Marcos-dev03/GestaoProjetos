@@ -1,0 +1,144 @@
+@model IEnumerable<Gestão_de_projetos.Models.Infra.UsuarioDaAplicacao>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Usuários";
+}
+
+<div class="page-header">
+
+    <div>
+        <span class="page-eyebrow">GESTÃO</span>
+
+        <h1>Usuários</h1>
+
+        <p>
+            Gerencie os usuários cadastrados no sistema.
+        </p>
+    </div>
+
+    <a asp-action="Create" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i>
+        Novo usuário
+    </a>
+
+</div>
+
+
+<div class="content-card">
+
+    <div class="table-responsive">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Usuário</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="user-avatar">
+
+                                    @{
+                                        var nome = usuario.NomeCadastrado ?? "U";
+
+                                        var inicial = nome.Length > 0
+                                            ? nome.Substring(0, 1).ToUpper()
+                                            : "U";
+                                    }
+
+                                    @inicial
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        @usuario.NomeCadastrado
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+                            @usuario.Email
+                        </td>
+
+
+                        <td>
+
+                            <span class="username-badge">
+                                @usuario.UserName
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@usuario.Id"
+                                   class="action-btn details"
+                                   title="Detalhes">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@usuario.Id"
+                                   class="action-btn edit"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@usuario.Id"
+                                   class="action-btn delete"
+                                   title="Excluir">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

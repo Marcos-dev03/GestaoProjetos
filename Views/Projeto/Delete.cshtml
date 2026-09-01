@@ -1,0 +1,81 @@
+@model Gestão_de_projetos.Models.Projeto
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Excluir Projeto";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1>Excluir Projeto</h1>
+        <p class="text-muted">
+            Confirme se deseja excluir este projeto.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h4 class="mb-4">@Model.Nome</h4>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Nome
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.Nome
+                </dd>
+
+                <dt class="col-sm-3">
+                    Descrição
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.Descricao
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data de início
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.DataInicio.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data de término
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.DataFim.ToString("dd/MM/yyyy")
+                </dd>
+
+            </dl>
+
+            <div class="alert alert-warning mt-4">
+                <strong>Atenção:</strong>
+                essa ação não poderá ser desfeita.
+            </div>
+
+            <form asp-action="Delete">
+
+                <input type="hidden"
+                       asp-for="IdProjeto" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Excluir Projeto
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

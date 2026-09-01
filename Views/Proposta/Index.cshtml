@@ -1,0 +1,182 @@
+@model IEnumerable<Gestão_de_projetos.Models.Proposta>
+
+@{
+    ViewData["Title"] = "Propostas";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-eyebrow">
+            GESTÃO
+        </span>
+
+        <h1>
+            Propostas
+        </h1>
+
+        <p>
+            Gerencie as propostas cadastradas no sistema.
+        </p>
+
+    </div>
+
+    <a asp-action="Create"
+       class="btn-primary-custom">
+
+        <i class="bi bi-plus-lg"></i>
+
+        Nova proposta
+
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    <div class="content-card-header">
+
+        <div>
+
+            <h3>
+                Propostas cadastradas
+            </h3>
+
+            <span>
+                Visualize e gerencie suas propostas.
+            </span>
+
+        </div>
+
+        <div class="card-counter">
+
+            <i class="bi bi-file-earmark-text"></i>
+
+            @Model.Count()
+
+        </div>
+
+    </div>
+
+    <div class="table-container">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Proposta
+                    </th>
+
+                    <th>
+                        Descrição
+                    </th>
+
+                    <th>
+                        Valor
+                    </th>
+
+                    <th>
+                        Ações
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var proposta in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <div class="project-cell">
+
+                                <div class="project-avatar">
+
+                                    <i class="bi bi-file-earmark-text"></i>
+
+                                </div>
+
+                                <div class="project-name">
+
+                                    <strong>
+                                        Proposta #@proposta.IdProposta
+                                    </strong>
+
+                                    <span>
+                                        Proposta cadastrada
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="description-cell">
+                                @proposta.Descricao
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <strong class="value-cell">
+                                @proposta.Valor.ToString("C")
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@proposta.IdProposta"
+                                   class="action-btn details"
+                                   title="Detalhes">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@proposta.IdProposta"
+                                   class="action-btn edit"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@proposta.IdProposta"
+                                   class="action-btn delete"
+                                   title="Excluir">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
