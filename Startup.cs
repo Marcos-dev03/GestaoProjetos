@@ -18,45 +18,56 @@ namespace Gestão_de_projetos
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// Resend
 			services.AddOptions();
 
 			services.AddHttpClient<ResendClient>();
 
 			services.Configure<ResendClientOptions>(options =>
 			{
-				options.ApiToken = Configuration["Email:ApiKey"];
+				options.ApiToken =
+					Environment.GetEnvironmentVariable(
+						"RESEND_API_KEY");
 			});
 
 			services.AddTransient<IResend, ResendClient>();
+
+			// Banco de dados
 			services.AddDbContext<BDContext>(options =>
 				options.UseNpgsql(
 					Configuration.GetConnectionString("BDContext")));
 
-			services.AddIdentity<UsuarioDaAplicacao, IdentityRole>(options =>
-			{
-				options.Password.RequiredLength = 8;
-				options.Password.RequireDigit = true;
-				options.Password.RequireLowercase = false;
-				options.Password.RequireUppercase = true;
-				options.Password.RequireNonAlphanumeric = true;
+			// Identity
+			services.AddIdentity<UsuarioDaAplicacao, IdentityRole>(
+				options =>
+				{
+					options.Password.RequiredLength = 8;
+					options.Password.RequireDigit = true;
+					options.Password.RequireLowercase = false;
+					options.Password.RequireUppercase = true;
+					options.Password.RequireNonAlphanumeric = true;
 
-				options.User.RequireUniqueEmail = true;
-			})
-			.AddEntityFrameworkStores<BDContext>()
-			.AddDefaultTokenProviders()
-			.AddErrorDescriber<PortugueseIdentityErrorDescriber>();
+					options.User.RequireUniqueEmail = true;
+				})
+				.AddEntityFrameworkStores<BDContext>()
+				.AddDefaultTokenProviders()
+				.AddErrorDescriber<PortugueseIdentityErrorDescriber>();
 
+			// Serviços da aplicação
 			services.AddScoped<GeradorNomeUsuario>();
 			services.AddScoped<EmailService>();
 
+			// Autorização
 			services.AddAuthorization();
 
+			// Configuração do Cookie de autenticação
 			services.ConfigureApplicationCookie(options =>
 			{
 				options.LoginPath = "/Infra/Acessar";
 				options.AccessDeniedPath = "/Infra/AcessoNegado";
 			});
 
+			// MVC
 			services.AddControllersWithViews();
 		}
 
@@ -74,7 +85,8 @@ namespace Gestão_de_projetos
 				app.UseHsts();
 			}
 
-			//app.UseHttpsRedirection();
+			// HTTPS desabilitado por enquanto
+			// app.UseHttpsRedirection();
 
 			app.UseStaticFiles();
 
@@ -92,49 +104,49 @@ namespace Gestão_de_projetos
 			});
 		}
 
-		public static async Task CriarAdmin(IHost host)
+		// Cria as roles necessárias para o sistema.
+		// Este método NÃO cria usuários e NÃO transforma
+		// nenhum usuário em Admin.
+		public static async Task CriarRoles(IHost host)
 		{
 			using (var scope = host.Services.CreateScope())
 			{
 				var serviceProvider = scope.ServiceProvider;
 
 				var roleManager =
-					serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+					serviceProvider.GetRequiredService<
+						RoleManager<IdentityRole>>();
 
-				var userManager =
-					serviceProvider.GetRequiredService<UserManager<UsuarioDaAplicacao>>();
-
-				const string nomeRole = "Admin";
-
-				if (!await roleManager.RoleExistsAsync(nomeRole))
+				var roles = new[]
 				{
-					await roleManager.CreateAsync(
-						new IdentityRole(nomeRole));
-				}
+					"Admin",
+					"Projetos",
+					"Propostas",
+					"Configuracoes"
+				};
 
-				var usuarios =
-					await userManager.Users.ToListAsync();
-
-				if (!usuarios.Any())
+				foreach (var role in roles)
 				{
-					return;
-				}
-
-				foreach (var usuario in usuarios)
-				{
-					if (await userManager.IsInRoleAsync(
-						usuario,
-						nomeRole))
+					if (await roleManager.RoleExistsAsync(role))
 					{
-						return;
+						continue;
+					}
+
+					var resultado =
+						await roleManager.CreateAsync(
+							new IdentityRole(role));
+
+					if (!resultado.Succeeded)
+					{
+						var erros = string.Join(
+							", ",
+							resultado.Errors.Select(
+								e => e.Description));
+
+						throw new Exception(
+							$"Erro ao criar a role '{role}': {erros}");
 					}
 				}
-
-				var primeiroUsuario = usuarios.First();
-
-				await userManager.AddToRoleAsync(
-					primeiroUsuario,
-					nomeRole);
 			}
 		}
 	}

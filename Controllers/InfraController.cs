@@ -167,6 +167,32 @@ namespace Gestão_de_projetos.Controllers
 
 			if (result.Succeeded)
 			{
+				var permissoes = new List<string>
+	{
+		"Projetos",
+		"Propostas",
+		"Configuracoes"
+	};
+
+				var resultadoRoles =
+					await _userManager.AddToRolesAsync(
+						user,
+						permissoes);
+
+				if (!resultadoRoles.Succeeded)
+				{
+					foreach (var erro in resultadoRoles.Errors)
+					{
+						ModelState.AddModelError(
+							string.Empty,
+							erro.Description);
+					}
+
+					await _userManager.DeleteAsync(user);
+
+					return View(model);
+				}
+
 				_logger.LogInformation(
 					"Usuário {NomeUsuario} criou uma nova conta.",
 					nomeUsuario);

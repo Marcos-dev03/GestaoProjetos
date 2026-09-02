@@ -4,18 +4,23 @@ namespace Gestão_de_projetos
 	{
 		public static void Main(string[] args)
 		{
-			var host = CreateHostBuilder(args).Build();
+			var host =
+				CreateHostBuilder(args).Build();
 
-			Startup.CriarAdmin(host).GetAwaiter().GetResult();
+			Startup.CriarRoles(host)
+				.GetAwaiter()
+				.GetResult();
 
 			host.Run();
 		}
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
+		public static IHostBuilder CreateHostBuilder(
+			string[] args) =>
 			Host.CreateDefaultBuilder(args)
-				.ConfigureWebHostDefaults(webBuilder =>
-				{
-					webBuilder.UseStartup<Startup>();
-				});
+				.ConfigureWebHostDefaults(
+					webBuilder =>
+					{
+						webBuilder.UseStartup<Startup>();
+					});
 	}
 }

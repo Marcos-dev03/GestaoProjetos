@@ -6,16 +6,13 @@ namespace Gestão_de_projetos.Services
 	{
 		private readonly IResend _resend;
 		private readonly ILogger<EmailService> _logger;
-		private readonly IConfiguration _configuration;
 
 		public EmailService(
 			IResend resend,
-			ILogger<EmailService> logger,
-			IConfiguration configuration)
+			ILogger<EmailService> logger)
 		{
 			_resend = resend;
 			_logger = logger;
-			_configuration = configuration;
 
 			_logger.LogInformation("EmailService inicializado.");
 		}
@@ -32,21 +29,9 @@ namespace Gestão_de_projetos.Services
 
 			try
 			{
-				var remetente = _configuration["Email:Remetente"];
-
-				if (string.IsNullOrWhiteSpace(remetente))
-				{
-					throw new InvalidOperationException(
-						"O remetente do e-mail não foi configurado.");
-				}
-
-				_logger.LogInformation(
-					"Preparando envio através do Resend. Remetente: {Remetente}",
-					remetente);
-
 				var email = new EmailMessage
 				{
-					From = remetente,
+					From = "Gestao Projetos <onboarding@resend.dev>",
 					Subject = assunto,
 					HtmlBody = mensagem
 				};
