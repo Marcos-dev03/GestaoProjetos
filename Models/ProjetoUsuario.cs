@@ -6,12 +6,12 @@ namespace Gestão_de_projetos.Models
 	{
 		public int IdProjeto { get; set; }
 
-		public string IdUsuario { get; set; }
+		public string IdUsuario { get; set; } = string.Empty;
 
-		public string NivelDeAcesso { get; set; }
+		public string NivelDeAcesso { get; set; } = string.Empty;
 
-		public Projeto Projeto { get; set; }
+		public Projeto Projeto { get; set; } = null!;
 
-		public UsuarioDaAplicacao Usuario { get; set; }
+		public UsuarioDaAplicacao Usuario { get; set; } = null!;
 	}
 }

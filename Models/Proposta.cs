@@ -8,7 +8,7 @@ namespace Gestão_de_projetos.Models
 		public int IdProposta { get; set; }
 
 		[Required]
-		public string Descricao { get; set; }
+		public string Descricao { get; set; } = string.Empty;
 
 		[Required]
 		public int TipoProposta { get; set; }
@@ -19,6 +19,6 @@ namespace Gestão_de_projetos.Models
 		[Required]
 		public int IdProjeto { get; set; }
 
-		public Projeto Projeto { get; set; }
+		public Projeto Projeto { get; set; } = null!;
 	}
 }

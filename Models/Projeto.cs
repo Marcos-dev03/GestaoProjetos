@@ -8,10 +8,10 @@ namespace Gestão_de_projetos.Models
 		public int IdProjeto { get; set; }
 
 		[Required]
-		public string Nome { get; set; }
+		public string Nome { get; set; } = string.Empty;
 
 		[Required]
-		public string Descricao { get; set; }
+		public string Descricao { get; set; } = string.Empty;
 
 		[Required]
 		public DateTime DataInicio { get; set; }

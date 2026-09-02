@@ -172,8 +172,9 @@ namespace Gestão_de_projetos.Controllers
 			{
 				Id = usuario.Id,
 				Nome = usuario.Nome,
-				Email = usuario.Email,
-
+				Email = usuario.Email
+	?? throw new InvalidOperationException(
+		"O e-mail do usuário não pode ser nulo."),
 				AcessoProjetos =
 					roles.Contains("Projetos"),
 

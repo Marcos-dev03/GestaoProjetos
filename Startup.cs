@@ -18,7 +18,7 @@ namespace Gestão_de_projetos
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<BDContext>(options =>
-				options.UseSqlServer(
+				options.UseNpgsql(
 					Configuration.GetConnectionString("BDContext")));
 
 			services.AddIdentity<UsuarioDaAplicacao, IdentityRole>(options =>

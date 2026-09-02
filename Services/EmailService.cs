@@ -19,10 +19,10 @@ namespace Gestão_de_projetos.Services
 		{
 			var emailConfig = _configuration.GetSection("Email");
 
-			string remetente = emailConfig["Remetente"];
-			string senha = emailConfig["Senha"];
-			string servidor = emailConfig["Servidor"];
-			int porta = int.Parse(emailConfig["Porta"]);
+			string remetente = emailConfig["Remetente"] ?? throw new InvalidOperationException("O remetente do e-mail não foi configurado."); ;
+			string senha = emailConfig["Senha"] ?? throw new InvalidOperationException("A senha do e-mail não foi configurada.");
+			string servidor = emailConfig["Servidor"] ?? throw new InvalidOperationException("O servidor do e-mail não foi configurado.");
+			int porta = int.Parse(emailConfig["Porta"] ?? throw new InvalidOperationException("A porta do e-mail não foi configurada."));
 
 			using var smtp = new SmtpClient(servidor, porta);
 

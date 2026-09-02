@@ -6,11 +6,11 @@ namespace Gestão_de_projetos.Models.Infra
 	{
 		[Required]
 		[Display(Name = "Nome do Usuário")]
-		public string NomeUsuario { get; set; }
+		public string NomeUsuario { get; set; } = string.Empty;
 
 		[Required]
 		[DataType(DataType.Password)]
-		public string Senha { get; set; }
+		public string Senha { get; set; } = string.Empty;
 
 		[Display(Name = "Lembrar de mim?")]
 		public bool LembrarDeMim { get; set; }
