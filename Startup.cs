@@ -3,6 +3,7 @@ using Gestão_de_projetos.Models.Infra;
 using Gestão_de_projetos.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Resend;
 
 namespace Gestão_de_projetos
 {
@@ -17,6 +18,16 @@ namespace Gestão_de_projetos
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddOptions();
+
+			services.AddHttpClient<ResendClient>();
+
+			services.Configure<ResendClientOptions>(options =>
+			{
+				options.ApiToken = Configuration["Email:ApiKey"];
+			});
+
+			services.AddTransient<IResend, ResendClient>();
 			services.AddDbContext<BDContext>(options =>
 				options.UseNpgsql(
 					Configuration.GetConnectionString("BDContext")));

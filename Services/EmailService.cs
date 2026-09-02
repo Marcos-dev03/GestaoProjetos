@@ -1,19 +1,21 @@
-﻿using System.Net;
-using System.Net.Mail;
+﻿using Resend;
 
 namespace Gestão_de_projetos.Services
 {
 	public class EmailService
 	{
-		private readonly IConfiguration _configuration;
+		private readonly IResend _resend;
 		private readonly ILogger<EmailService> _logger;
+		private readonly IConfiguration _configuration;
 
 		public EmailService(
-			IConfiguration configuration,
-			ILogger<EmailService> logger)
+			IResend resend,
+			ILogger<EmailService> logger,
+			IConfiguration configuration)
 		{
-			_configuration = configuration;
+			_resend = resend;
 			_logger = logger;
+			_configuration = configuration;
 
 			_logger.LogInformation("EmailService inicializado.");
 		}
@@ -30,120 +32,41 @@ namespace Gestão_de_projetos.Services
 
 			try
 			{
+				var remetente = _configuration["Email:Remetente"];
 
-				_logger.LogInformation("Carregando configurações da seção 'Email'.");
-
-				var emailConfig = _configuration.GetSection("Email");
-
-				string remetente = emailConfig["Remetente"]
-					?? throw new InvalidOperationException(
+				if (string.IsNullOrWhiteSpace(remetente))
+				{
+					throw new InvalidOperationException(
 						"O remetente do e-mail não foi configurado.");
-
-				string senha = emailConfig["Senha"]
-					?? throw new InvalidOperationException(
-						"A senha do e-mail não foi configurada.");
-
-				string servidor = emailConfig["Servidor"]
-					?? throw new InvalidOperationException(
-						"O servidor do e-mail não foi configurado.");
-
-				int porta = int.Parse(
-					emailConfig["Porta"]
-					?? throw new InvalidOperationException(
-						"A porta do e-mail não foi configurada.")
-				);
+				}
 
 				_logger.LogInformation(
-					"Configuração carregada. Servidor: {Servidor}, Porta: {Porta}, Remetente: {Remetente}",
-					servidor,
-					porta,
+					"Preparando envio através do Resend. Remetente: {Remetente}",
 					remetente);
 
-				_logger.LogInformation("Criando cliente SMTP.");
-
-				using var smtp = new SmtpClient(servidor, porta)
+				var email = new EmailMessage
 				{
-
-					EnableSsl = true,
-					Timeout = 3000,
-					Credentials = new NetworkCredential(remetente, senha)
+					From = remetente,
+					Subject = assunto,
+					HtmlBody = mensagem
 				};
 
-				_logger.LogInformation(
-					"Cliente SMTP configurado. SSL habilitado: {Ssl}",
-					smtp.EnableSsl);
-
-				_logger.LogInformation("Criando objeto MailMessage.");
-
-				using var mail = new MailMessage();
-
-				mail.From = new MailAddress(
-					remetente,
-					"Gestão+");
+				email.To.Add(destinatario);
 
 				_logger.LogInformation(
-					"Remetente definido: {Remetente}",
-					remetente);
+					"Enviando e-mail através da API do Resend...");
 
-				mail.To.Add(destinatario);
-
-				_logger.LogInformation(
-					"Destinatário definido: {Destinatario}",
-					destinatario);
-
-				mail.Subject = assunto;
+				var resposta = await _resend.EmailSendAsync(email);
 
 				_logger.LogInformation(
-					"Assunto definido: {Assunto}",
-					assunto);
-
-				mail.Body = mensagem;
-
-				mail.IsBodyHtml = true;
-
-				_logger.LogInformation(
-					"Corpo do e-mail configurado. HTML: {Html}",
-					mail.IsBodyHtml);
-
-				_logger.LogInformation(
-					"Enviando e-mail através do SMTP {Servidor}:{Porta}...",
-					servidor,
-					porta);
-
-				_logger.LogInformation("ANTES do SendMailAsync");
-
-				await smtp.SendMailAsync(mail)
-					.WaitAsync(TimeSpan.FromSeconds(15));
-
-				_logger.LogInformation("DEPOIS do SendMailAsync");
-
-				_logger.LogInformation(
-					"E-mail enviado com sucesso para {Destinatario}.",
-					destinatario);
-			}
-			catch (FormatException ex)
-			{
-				_logger.LogError(
-					ex,
-					"Erro de formato na configuração do e-mail. Verifique principalmente a porta SMTP.");
-
-				throw;
-			}
-			catch (SmtpException ex)
-			{
-				_logger.LogError(
-					ex,
-					"Erro SMTP ao tentar enviar e-mail para {Destinatario}. Status: {Status}",
-					destinatario,
-					ex.StatusCode);
-
-				throw;
+					"E-mail enviado com sucesso. ID do Resend: {EmailId}",
+					resposta.Content);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(
 					ex,
-					"Erro inesperado ao enviar e-mail para {Destinatario}.",
+					"Erro ao enviar e-mail para {Destinatario}.",
 					destinatario);
 
 				throw;
