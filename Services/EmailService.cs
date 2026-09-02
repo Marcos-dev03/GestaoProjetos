@@ -6,10 +6,16 @@ namespace Gestão_de_projetos.Services
 	public class EmailService
 	{
 		private readonly IConfiguration _configuration;
+		private readonly ILogger<EmailService> _logger;
 
-		public EmailService(IConfiguration configuration)
+		public EmailService(
+			IConfiguration configuration,
+			ILogger<EmailService> logger)
 		{
 			_configuration = configuration;
+			_logger = logger;
+
+			_logger.LogInformation("EmailService inicializado.");
 		}
 
 		public async Task EnviarAsync(
@@ -17,35 +23,137 @@ namespace Gestão_de_projetos.Services
 			string assunto,
 			string mensagem)
 		{
-			var emailConfig = _configuration.GetSection("Email");
+			_logger.LogInformation(
+				"Iniciando envio de e-mail para {Destinatario}. Assunto: {Assunto}",
+				destinatario,
+				assunto);
 
-			string remetente = emailConfig["Remetente"] ?? throw new InvalidOperationException("O remetente do e-mail não foi configurado."); ;
-			string senha = emailConfig["Senha"] ?? throw new InvalidOperationException("A senha do e-mail não foi configurada.");
-			string servidor = emailConfig["Servidor"] ?? throw new InvalidOperationException("O servidor do e-mail não foi configurado.");
-			int porta = int.Parse(emailConfig["Porta"] ?? throw new InvalidOperationException("A porta do e-mail não foi configurada."));
+			try
+			{
 
-			using var smtp = new SmtpClient(servidor, porta);
+				_logger.LogInformation("Carregando configurações da seção 'Email'.");
 
-			smtp.EnableSsl = true;
-			smtp.Credentials = new NetworkCredential(
-				remetente,
-				senha);
+				var emailConfig = _configuration.GetSection("Email");
 
-			using var mail = new MailMessage();
+				string remetente = emailConfig["Remetente"]
+					?? throw new InvalidOperationException(
+						"O remetente do e-mail não foi configurado.");
 
-			mail.From = new MailAddress(
-				remetente,
-				"Gestão+");
+				string senha = emailConfig["Senha"]
+					?? throw new InvalidOperationException(
+						"A senha do e-mail não foi configurada.");
 
-			mail.To.Add(destinatario);
+				string servidor = emailConfig["Servidor"]
+					?? throw new InvalidOperationException(
+						"O servidor do e-mail não foi configurado.");
 
-			mail.Subject = assunto;
+				int porta = int.Parse(
+					emailConfig["Porta"]
+					?? throw new InvalidOperationException(
+						"A porta do e-mail não foi configurada.")
+				);
 
-			mail.Body = mensagem;
+				_logger.LogInformation(
+					"Configuração carregada. Servidor: {Servidor}, Porta: {Porta}, Remetente: {Remetente}",
+					servidor,
+					porta,
+					remetente);
 
-			mail.IsBodyHtml = true;
+				_logger.LogInformation("Criando cliente SMTP.");
 
-			await smtp.SendMailAsync(mail);
+				using var smtp = new SmtpClient(servidor, porta);
+
+				smtp.EnableSsl = true;
+				smtp.Timeout = 3000;
+
+				smtp.Credentials = new NetworkCredential(
+					remetente,
+					senha);
+
+				_logger.LogInformation(
+					"Cliente SMTP configurado. SSL habilitado: {Ssl}",
+					smtp.EnableSsl);
+
+				_logger.LogInformation("Criando objeto MailMessage.");
+
+				using var mail = new MailMessage();
+
+				mail.From = new MailAddress(
+					remetente,
+					"Gestão+");
+
+				_logger.LogInformation(
+					"Remetente definido: {Remetente}",
+					remetente);
+
+				mail.To.Add(destinatario);
+
+				_logger.LogInformation(
+					"Destinatário definido: {Destinatario}",
+					destinatario);
+
+				mail.Subject = assunto;
+
+				_logger.LogInformation(
+					"Assunto definido: {Assunto}",
+					assunto);
+
+				mail.Body = mensagem;
+
+				mail.IsBodyHtml = true;
+
+				_logger.LogInformation(
+					"Corpo do e-mail configurado. HTML: {Html}",
+					mail.IsBodyHtml);
+
+				_logger.LogInformation(
+					"Enviando e-mail através do SMTP {Servidor}:{Porta}...",
+					servidor,
+					porta);
+
+				_logger.LogInformation("ANTES do SendMailAsync");
+
+				await smtp.SendMailAsync(mail);
+
+				_logger.LogInformation("DEPOIS do SendMailAsync");
+
+				_logger.LogInformation(
+					"E-mail enviado com sucesso para {Destinatario}.",
+					destinatario);
+			}
+			catch (FormatException ex)
+			{
+				_logger.LogError(
+					ex,
+					"Erro de formato na configuração do e-mail. Verifique principalmente a porta SMTP.");
+
+				throw;
+			}
+			catch (SmtpException ex)
+			{
+				_logger.LogError(
+					ex,
+					"Erro SMTP ao tentar enviar e-mail para {Destinatario}. Status: {Status}",
+					destinatario,
+					ex.StatusCode);
+
+				throw;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(
+					ex,
+					"Erro inesperado ao enviar e-mail para {Destinatario}.",
+					destinatario);
+
+				throw;
+			}
+			finally
+			{
+				_logger.LogInformation(
+					"Processo de envio de e-mail finalizado para {Destinatario}.",
+					destinatario);
+			}
 		}
 	}
 }
