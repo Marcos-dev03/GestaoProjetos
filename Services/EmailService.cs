@@ -61,14 +61,13 @@ namespace Gestão_de_projetos.Services
 
 				_logger.LogInformation("Criando cliente SMTP.");
 
-				using var smtp = new SmtpClient(servidor, porta);
+				using var smtp = new SmtpClient(servidor, porta)
+				{
 
-				smtp.EnableSsl = true;
-				smtp.Timeout = 3000;
-
-				smtp.Credentials = new NetworkCredential(
-					remetente,
-					senha);
+					EnableSsl = true,
+					Timeout = 3000,
+					Credentials = new NetworkCredential(remetente, senha)
+				};
 
 				_logger.LogInformation(
 					"Cliente SMTP configurado. SSL habilitado: {Ssl}",
@@ -113,7 +112,8 @@ namespace Gestão_de_projetos.Services
 
 				_logger.LogInformation("ANTES do SendMailAsync");
 
-				await smtp.SendMailAsync(mail);
+				await smtp.SendMailAsync(mail)
+					.WaitAsync(TimeSpan.FromSeconds(3));
 
 				_logger.LogInformation("DEPOIS do SendMailAsync");
 
