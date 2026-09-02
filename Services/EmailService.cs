@@ -113,7 +113,7 @@ namespace Gestão_de_projetos.Services
 				_logger.LogInformation("ANTES do SendMailAsync");
 
 				await smtp.SendMailAsync(mail)
-					.WaitAsync(TimeSpan.FromSeconds(3));
+					.WaitAsync(TimeSpan.FromSeconds(15));
 
 				_logger.LogInformation("DEPOIS do SendMailAsync");
 
